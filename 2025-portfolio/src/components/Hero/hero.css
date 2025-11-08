@@ -1,0 +1,6 @@
+.hero-section {
+    background-image: -webkit-linear-gradient(to bottom, #022747, #1191FF, #CDE1FF);
+    background-image: -moz-linear-gradient(to bottom, #022747, #1191FF, #CDE1FF);
+    background-image: linear-gradient(to bottom, #022747, #1191FF, #CDE1FF);
+    border: 18px solid #1C1C1C;
+}
