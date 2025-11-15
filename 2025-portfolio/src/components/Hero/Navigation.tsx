@@ -10,16 +10,16 @@ function Navigation() {
         initial="hidden"
         animate="visible"
       >
-        <ul className="flex justify-between items-center text-white font-semibold text-[3rem]">
-          <li className="text-[3rem]/12 pl-[18px]">
+        <ul className="flex justify-between items-start text-white font-semibold text-[2vw]">
+          <li className="text-[3vw]/12 pl-[18px]">
             ERIC <br /> RISHER
           </li>
 
-          <div className="flex gap-12 pr-[18px]">
-            <li>[ About ]</li>
-            <li>[ Works ]</li>
+          <div className="flex gap-12 pr-[18px] items-center">
+            <li>[ ABOUT ]</li>
+            <li>[ WORKS ]</li>
             <li>[ SERVICES ]</li>
-            <li>[ CONNECT ]</li>
+            <li className="btn bg-[#B287A3] py-2 px-6 rounded-2xl">CONNECT</li>
           </div>
         </ul>
       </motion.div>

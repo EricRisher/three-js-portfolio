@@ -2,23 +2,28 @@
 
 import { motion } from "framer-motion";
 import { HeroScene } from "./HeroScene";
-import { fadeInUp, staggerLetters, letter } from "@/lib/animations";
+import {
+  fadeInUp,
+  staggerLetters,
+  letter,
+  floatingEffect,
+} from "@/lib/animations";
 import Navigation from "./Navigation";
 import "./hero.css";
 
 export function Hero() {
   return (
-    <section className="hero-section relative h-screen w-full overflow-hidden flex flex-col text-white">
+    <section className="hero-section relative h-[70vh] w-full overflow-hidden flex flex-col text-white">
       {/* Content Overlay */}
       <div className="relative z-10 h-full flex flex-col">
-        <div className="px-4 pt-20">
+        <div className="px-4 pt-14">
           <HeroScene />
           <Navigation />
 
           <div className="text-right">
             <motion.h1
               variants={staggerLetters}
-              className="text-[9rem] font-bold tracking-[-10px]"
+              className="text-[7vw] font-bold tracking-[-9px]"
               initial="hidden"
               animate="visible"
             >
@@ -36,7 +41,7 @@ export function Hero() {
 
             <motion.p
               variants={fadeInUp}
-              className="text-[5rem]/18 mb-6 text-[#D5DFFF]"
+              className="text-[3vw]/10 mb-6 text-[#dfe5fa] translate-y-[-20px]"
               initial="hidden"
               animate="visible"
             >
@@ -48,7 +53,15 @@ export function Hero() {
         </div>
 
         {/* Recent Work - Positioned at bottom */}
-        <div className="mt-auto px-4 pb-12">
+        <div className="mt-auto px-4 pb-4">
+          <motion.h2
+            variants={floatingEffect}
+            className="text-[20px]/6 text-[#888888] mb-2 text-center translate-y-20"
+            initial="initial"
+            animate="animate"
+          >
+            ↓ Explore ↓
+          </motion.h2>
           <motion.p
             variants={fadeInUp}
             className="text-right text-[40px]/9 line-height-[1.2]"

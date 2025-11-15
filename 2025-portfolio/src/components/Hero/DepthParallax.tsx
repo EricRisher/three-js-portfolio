@@ -1,7 +1,7 @@
 "use client";
 
 import { useTexture } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 
@@ -22,8 +22,7 @@ export function DepthParallax() {
     }
   );
 
-  const { viewport } = useThree();
-  const FIXED_WORLD_HEIGHT = 0.7; 
+  const FIXED_WORLD_HEIGHT = 0.75; 
   const GEOM_WIDTH = 3; 
   const GEOM_HEIGHT = 2; 
 
