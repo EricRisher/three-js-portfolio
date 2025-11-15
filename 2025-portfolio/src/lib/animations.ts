@@ -51,8 +51,6 @@ export const slideInRight = {
   transition: { duration: 0.6 },
 };
 
-
-
 export const floatingEffect: Variants = {
   initial: { y: 0 },
   animate: {
@@ -63,6 +61,18 @@ export const floatingEffect: Variants = {
       duration: 1.5,
       type: "tween",
       ease: "easeInOut",
+    },
+  },
+};
+
+export const slideDownExit: Variants = {
+  visible: { y: 0, opacity: 1 },
+  exit: {
+    y: "100%",
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.4, 0.0, 0.2, 1],
     },
   },
 };

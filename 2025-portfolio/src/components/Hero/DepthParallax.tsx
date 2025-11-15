@@ -2,23 +2,49 @@
 
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import * as THREE from "three";
 
 export function DepthParallax() {
   const meshRef = useRef<THREE.Mesh>(null!);
+  const mouseRef = useRef({ x: 0, y: 0 });
+
+  // Listen for global mouse movement
+  useEffect(() => {
+    const handleGlobalMouse = (event: MouseEvent) => {
+      mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    window.addEventListener("mousemove", handleGlobalMouse);
+    
+    return () => {
+      window.removeEventListener("mousemove", handleGlobalMouse);
+    };
+  }, []);
 
   const [colorTexture, depthTexture] = useTexture(
     [
       "/textures/hero.png",
-      "/textures/lithophane.png",
+      "/textures/lithophanev2.png",
     ],
     (textures) => {
-      const mainTexture = Array.isArray(textures) ? textures[0] : textures;
-      mainTexture.minFilter = THREE.LinearFilter;
-      mainTexture.magFilter = THREE.LinearFilter;
-      mainTexture.anisotropy = 16;
-      mainTexture.colorSpace = THREE.SRGBColorSpace;
+      const [mainTex, depthTex] = Array.isArray(textures) ? textures : [textures, textures];
+      
+      // Enhanced texture settings for main texture
+      mainTex.minFilter = THREE.LinearMipMapLinearFilter;
+      mainTex.magFilter = THREE.LinearFilter;
+      mainTex.anisotropy = 16;
+      mainTex.colorSpace = THREE.SRGBColorSpace;
+      mainTex.generateMipmaps = true;
+      
+      // Critical: Smooth the depth map
+      depthTex.minFilter = THREE.LinearMipMapLinearFilter;
+      depthTex.magFilter = THREE.LinearFilter;
+      depthTex.anisotropy = 16;
+      depthTex.generateMipmaps = true;
+      depthTex.wrapS = THREE.ClampToEdgeWrapping;
+      depthTex.wrapT = THREE.ClampToEdgeWrapping;
     }
   );
 
@@ -40,35 +66,38 @@ export function DepthParallax() {
   const scaleX = targetWorldWidth / GEOM_WIDTH;
   const scaleY = FIXED_WORLD_HEIGHT / GEOM_HEIGHT;
 
-  // Mouse-based parallax
-  useFrame((state) => {
+  // Use global mouse position for parallax
+  useFrame(() => {
     if (!meshRef.current) return;
 
-    const { mouse } = state;
+    const mouse = mouseRef.current;
     meshRef.current.rotation.y = THREE.MathUtils.lerp(
       meshRef.current.rotation.y,
       mouse.x * 0.3,
-      0.05
+      0.08
     );
     meshRef.current.rotation.x = THREE.MathUtils.lerp(
       meshRef.current.rotation.x,
       -mouse.y * 0.3,
-      0.05
+      0.08
     );
   });
 
   return (
     <mesh ref={meshRef} scale={[scaleX, scaleY, 1]}>
-      {/* High subdivision for smoother displacement */}
-      <planeGeometry args={[3, 2, 256, 256]} />
+      <planeGeometry args={[3, 2, 512, 512]} />
       <meshStandardMaterial
         map={colorTexture}
         displacementMap={depthTexture}
         displacementScale={0.15}
+        displacementBias={-0.05}
         metalness={0.1}
         transparent={true}
         roughness={0.9}
         alphaTest={0.01}
+        side={THREE.FrontSide}
+        depthWrite={true}
+        depthTest={true}
       />
     </mesh>
   );

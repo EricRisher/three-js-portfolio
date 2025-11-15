@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { SplashScreen } from "@/components/SplashScreen";
 import { useProgress } from "@react-three/drei";
 import { PSPSection } from "@/components/PSP/PSPSection";
+import { motion } from "framer-motion";
 
 // Dynamically import Hero (3D model)
 const Hero = dynamic(
@@ -17,9 +18,11 @@ const Hero = dynamic(
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
-  const { progress } = useProgress(); // 0 to 100
+  const { progress } = useProgress();
 
-  const handleSplashComplete = () => setShowSplash(false);
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
 
   return (
     <>
@@ -28,12 +31,24 @@ export default function Home() {
       )}
 
       <main>
-        <Hero /> {/* HeroSection with DepthParallax */}
-        <PSPSection /> {/* Full-screen PSP model below */}
-        <section className="min-h-screen bg-black text-white p-8">
-          <h2 className="text-4xl font-bold">About Me</h2>
-          <p className="mt-4">Section placeholder...</p>
-        </section>
+        <Hero />
+
+        {!showSplash && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <PSPSection />
+          </motion.div>
+        )}
+
+        {!showSplash && (
+          <section className="min-h-screen bg-black text-white p-8">
+            <h2 className="text-4xl font-bold">About Me</h2>
+            <p className="mt-4">Section placeholder...</p>
+          </section>
+        )}
       </main>
     </>
   );
