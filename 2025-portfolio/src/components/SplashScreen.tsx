@@ -12,7 +12,7 @@ interface SplashScreenProps {
 export function SplashScreen({ progress, onComplete }: SplashScreenProps) {
   const [isExiting, setIsExiting] = useState(false);
   const [counter, setCounter] = useState(0);
-  const rafRef = useRef<number>();
+const rafRef = useRef<number | null>(null);
 
   // Animate counter smoothly
   useEffect(() => {

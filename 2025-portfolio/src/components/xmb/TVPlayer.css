@@ -1,0 +1,72 @@
+/* TVPlayer.css */
+.tv-player-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 5, 10, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.tv-container {
+  position: relative;
+  width: 60vw;    /* responsive width */
+  max-width: 700px; 
+  aspect-ratio: 300 / 400;  /* matches your TV screen ratio */
+  border-radius: 16px;
+  overflow: hidden;
+  background-image: url(/icons/crt-tv-1.png);
+  background-size: cover;
+  background-position: center;
+}
+.tv-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tv-screen {
+  position: absolute;
+  bottom: 5%;
+  left: -0.5%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+}
+
+.tv-screen canvas {
+  width: auto;   /* auto keeps aspect ratio */
+  height: 100%;  /* fits height inside screen */
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+
+.tv-close-btn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  font-size: 1.4rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 1000;
+}
+
+.tv-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

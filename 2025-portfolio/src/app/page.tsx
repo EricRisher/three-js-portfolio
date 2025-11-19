@@ -35,9 +35,9 @@ export default function Home() {
 
         {!showSplash && (
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1}}
+            transition={{ duration: 0.9, ease: "easeOut" }}
           >
             <PSPSection />
           </motion.div>

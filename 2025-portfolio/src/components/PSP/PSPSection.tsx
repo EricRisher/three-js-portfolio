@@ -1,97 +1,103 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Suspense, useRef } from "react";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { PSPModel } from "./PSPModel";
-import { Environment, OrbitControls } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { motion } from "framer-motion";
-import { fadeIn } from "@/lib/animations";
-
-interface DynamicControlsProps {
-  target: [number, number, number];
-}
-
-export function DynamicOrbitControls({ target }: DynamicControlsProps) {
-  const controlsRef = useRef<OrbitControlsImpl>(null);
-
-  useFrame(() => {
-    if (controlsRef.current) {
-      // Smoothly update target to match model position
-      controlsRef.current.target.lerp(new THREE.Vector3(...target), 0.2);
-      controlsRef.current.update();
-    }
-  });
-
-  return (
-    <OrbitControls
-      ref={controlsRef}
-      enableZoom={false}
-      enablePan={false}
-      minPolarAngle={Math.PI * 0.4}
-      maxPolarAngle={Math.PI * 0.6}
-      minAzimuthAngle={-Math.PI * 0.9}
-      maxAzimuthAngle={Math.PI * 0.9}
-      autoRotate={false}
-    />
-  );
-}
+import PSPScreen from "./PSPScreen";
+import { useStartup } from "../../context/PSPStartupContext";
 
 export function PSPSection() {
-  const modelPosition: [number, number, number] = [0, 0, 0.1];
+  const [scrollY, setScrollY] = useState(0);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [sectionHeight, setSectionHeight] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (sectionRef.current) setSectionHeight(sectionRef.current.offsetHeight);
+  }, []);
+
+  // Calculate scroll progress and UI state here
+  const t = Math.min(scrollY / sectionHeight, 1);
+  const showUI = t >= 1; // <-- accessible for JSX now
+
+  function AnimatedPSP() {
+    const modelRef = useRef<THREE.Group>(null);
+
+    useFrame(() => {
+      if (!modelRef.current || !sectionHeight) return;
+
+      // Start/top-left to end/bottom-right
+      const startX = -3.8,
+        endX = 0;
+      const startY = 4,
+        endY = -10;
+      const startScale = 0.6,
+        endScale = 1.1;
+
+      const startPitch = 0.05; // flat at top
+      const endPitch = 0.12; // tilt slightly forward
+      modelRef.current.rotation.x = THREE.MathUtils.lerp(
+        startPitch,
+        endPitch,
+        t
+      );
+
+      modelRef.current.position.x = THREE.MathUtils.lerp(startX, endX, t);
+      modelRef.current.position.y = THREE.MathUtils.lerp(startY, endY, t);
+      modelRef.current.rotation.y = t * Math.PI * 2;
+      const scale = THREE.MathUtils.lerp(startScale, endScale, t);
+      modelRef.current.scale.set(scale, scale, scale);
+    });
+
+    return <PSPModel ref={modelRef} />;
+  }
 
   return (
-    <section className="w-full h-screen relative flex">
-      <div
-        className="w-2/5 h-full relative"
-        style={{ overflow: "visible", pointerEvents: "auto" }}
+    <section ref={sectionRef} className="w-full h-screen relative flex">
+      <Canvas
+        camera={{ position: [0, 0, 24], fov: 45 }}
+        gl={{
+          alpha: true,
+          antialias: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.2,
+        }}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
       >
-        <Canvas
-          camera={{ position: [0, 0, 20], fov: 50 }}
-          gl={{
-            alpha: true,
-            antialias: true,
-            toneMapping: THREE.ACESFilmicToneMapping,
-            toneMappingExposure: 1.2,
-          }}
-          style={{
-            position: "absolute",
-            top: -250,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            overflow: "visible",
-          }}
-        >
-          <Suspense fallback={null}>
-            <PSPModel position={modelPosition} />
+        <Suspense fallback={null}>
+          <AnimatedPSP />
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 5, 5]} intensity={1.5} />
+          <Environment preset="city" />
+        </Suspense>
+      </Canvas>
 
-            {/* Lights */}
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 5, 5]} intensity={1.5} />
-            <pointLight
-              position={[-3, 2, -2]}
-              intensity={0.5}
-              color="#4a90e2"
-            />
+      {/* Overlay the PSP screen/XMB menu only when scroll ends */}
+      <PSPScreen showUI={showUI} />
 
-            {/* Environment */}
-            <Environment preset="city" />
+      <div className="w-9/16 h-full relative z-10 pointer-events-none"></div>
 
-            {/* Dynamic OrbitControls */}
-            <DynamicOrbitControls target={modelPosition} />
-          </Suspense>
-        </Canvas>
-      </div>
-
-      {/* Right 2/3 can be content, or empty */}
-      <motion.div className="w-3/5 h-full ">
+      <motion.div className="w-6/16 h-full relative z-10">
         <motion.p
-          variants={fadeIn}
-          className="absolute text-white text-right text-[2.6vw]/12 p-6 top-24"
-          initial="hidden"
-          animate="visible"
+          className="absolute text-white text-right text-[2.3vw]/12 p-6 top-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
           &quot;I strive for two things in design: simplicity and clarity. Great
           design is born of those two things.&quot;— Lindon Leader

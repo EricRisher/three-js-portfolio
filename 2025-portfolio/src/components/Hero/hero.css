@@ -4,3 +4,22 @@
     background-image: linear-gradient(to bottom, #022747, #1191FF, #CDE1FF);
     border: 18px solid #1C1C1C;
 }
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    transparent 0%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+}
+
+.hero-p {
+    font-size: clamp(1.2vw, 3vw, 2.8vw);
+    line-height: 2.6vw;
+    margin-bottom: 1.5vw;
+}

@@ -31,11 +31,11 @@ export function HeroScene() {
 
   return (
     <div 
-      className="absolute inset-0 mt-70 h-auto"
+      className="absolute inset-0 mt-100 h-auto"
       style={{ pointerEvents: 'none' }} // Make Canvas non-blocking
     >
       <Canvas 
-        camera={{ position: [0, 0, 1.4], fov: 45 }} 
+        camera={{ position: [0, 0, 1], fov: 45 }} 
         gl={{ alpha: true, antialias: true }}
         style={{ pointerEvents: 'none' }} // Ensure Canvas doesn't block interactions
       >

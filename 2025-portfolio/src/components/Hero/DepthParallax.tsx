@@ -31,17 +31,15 @@ export function DepthParallax() {
     (textures) => {
       const [mainTex, depthTex] = Array.isArray(textures) ? textures : [textures, textures];
       
-      // Enhanced texture settings for main texture
       mainTex.minFilter = THREE.LinearMipMapLinearFilter;
       mainTex.magFilter = THREE.LinearFilter;
-      mainTex.anisotropy = 16;
+      mainTex.anisotropy = 32;
       mainTex.colorSpace = THREE.SRGBColorSpace;
       mainTex.generateMipmaps = true;
       
-      // Critical: Smooth the depth map
       depthTex.minFilter = THREE.LinearMipMapLinearFilter;
       depthTex.magFilter = THREE.LinearFilter;
-      depthTex.anisotropy = 16;
+      depthTex.anisotropy = 32;
       depthTex.generateMipmaps = true;
       depthTex.wrapS = THREE.ClampToEdgeWrapping;
       depthTex.wrapT = THREE.ClampToEdgeWrapping;
@@ -73,12 +71,12 @@ export function DepthParallax() {
     const mouse = mouseRef.current;
     meshRef.current.rotation.y = THREE.MathUtils.lerp(
       meshRef.current.rotation.y,
-      mouse.x * 0.3,
+      mouse.x * 0.2,
       0.08
     );
     meshRef.current.rotation.x = THREE.MathUtils.lerp(
       meshRef.current.rotation.x,
-      -mouse.y * 0.3,
+      -mouse.y * 0.2,
       0.08
     );
   });
@@ -89,8 +87,8 @@ export function DepthParallax() {
       <meshStandardMaterial
         map={colorTexture}
         displacementMap={depthTexture}
-        displacementScale={0.15}
-        displacementBias={-0.05}
+        displacementScale={0.1}
+        displacementBias={0}
         metalness={0.1}
         transparent={true}
         roughness={0.9}
