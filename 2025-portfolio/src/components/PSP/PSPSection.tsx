@@ -7,12 +7,11 @@ import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { motion } from "framer-motion";
 import PSPScreen from "./PSPScreen";
-import { useStartup } from "../../context/PSPStartupContext";
 
 export function PSPSection() {
   const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const [sectionHeight, setSectionHeight] = useState(1);
+  const sectionHeight = "" + (sectionRef.current?.offsetHeight || 0) + "px";
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -20,13 +19,11 @@ export function PSPSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    if (sectionRef.current) setSectionHeight(sectionRef.current.offsetHeight);
-  }, []);
+
 
   // Calculate scroll progress and UI state here
-  const t = Math.min(scrollY / sectionHeight, 1);
-  const showUI = t >= 1; // <-- accessible for JSX now
+  const t = Math.min(scrollY / parseInt(sectionHeight), 1);
+  const showUI = t >= 1; 
 
   function AnimatedPSP() {
     const modelRef = useRef<THREE.Group>(null);
@@ -61,7 +58,7 @@ export function PSPSection() {
   }
 
   return (
-    <section ref={sectionRef} className="w-full h-screen relative flex">
+    <section ref={sectionRef} className="w-full h-[1080px] relative flex">
       <Canvas
         camera={{ position: [0, 0, 24], fov: 45 }}
         gl={{

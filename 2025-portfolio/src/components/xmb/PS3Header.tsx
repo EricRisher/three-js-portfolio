@@ -1,5 +1,4 @@
 "use client";
-import { usePSPStartup } from "@/context/PSPStartupContext";
 import { useEffect, useState } from "react";
 import "./PS3Header.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -119,13 +118,6 @@ function Clock() {
 }
 
 export default function PS3Header() {
-  const { phase } = useStartup();
-
-  // Only show header after "showUI" phase
-  if (phase !== "showUI") {
-    return null;
-  }
-
   return (
     <header className="ps3-header outline pt-4">
       <Clock />

@@ -80,8 +80,8 @@ export default function XMBMenu() {
     );
   }, [selected, currentSubSelected]);
 
-  const itemWidth = 230;
-  const containerWidth = 1000;
+  const itemWidth = 120;
+  const containerWidth = 680;
   const centerOffset = containerWidth / 5 - itemWidth / 2;
 
   const handleKeyDown = useCallback(
@@ -160,24 +160,24 @@ export default function XMBMenu() {
       }`}
       style={{ transition: "opacity 0.8s" }}
     >
-      <PS3Header />
+      {/* <PS3Header /> */}
 
       <div
         ref={menuRef}
-        className="outline-none flex flex-col h-screen relative overflow-visible"
+        className="outline-none flex flex-col h-screen relative overflow-visible pt-18"
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
         <div className="relative w-full overflow-visible mt-0">
           <motion.div
-            className="category-container flex space-x-20 overflow-visible"
+            className="category-container flex overflow-visible"
             animate={{ x: centerOffset - selected * itemWidth }}
             transition={{ type: "tween", duration: 0.15, ease: "easeOut" }}
           >
             {menuItems.map((item, index) => (
               <motion.div
                 key={item.id + index}
-                className="category relative flex flex-col justify-between items-center cursor-pointer min-w-[150px] transition-transform duration-300 ease-in-out"
+                className="category relative flex flex-col justify-center items-center cursor-pointer min-w-[120px] transition-transform duration-300 ease-in-out"
                 animate={{
                   opacity: Math.abs(selected - index) > 2 ? 0.3 : 1,
                 }}
@@ -186,9 +186,9 @@ export default function XMBMenu() {
                 <motion.img
                   src={item.icon}
                   alt={item.label}
-                  width={80}
-                  height={80}
-                  style={{ maxHeight: 60 }}
+                  width="auto"
+                  height={48}
+                  style={{ maxWidth: 48, maxHeight: 48 }}
                   className={`transition ${
                     selected === index
                       ? "opacity-100 scale-110 filter drop-shadow-glow"
@@ -200,7 +200,7 @@ export default function XMBMenu() {
                   transition={{ duration: 0.15 }}
                 />
                 <motion.span
-                  className="mt-2 text-white text-2xl drop-shadow-glow"
+                  className="mt-2 text-white text-xl drop-shadow-glow"
                   animate={{ opacity: selected === index ? 1 : 0 }}
                   transition={{ duration: 0.15 }}
                 >
@@ -208,7 +208,7 @@ export default function XMBMenu() {
                 </motion.span>
 
                 {selected === index && item.submenu && (
-                  <div className="absolute ml-12 mt-32 flex flex-col items-start z-50 w-[34vw] left-[-10px] gap-[20px]">
+                  <div className="absolute flex flex-col items-start z-50 w-[400px] top-20 left-7">
                     {item.submenu.map((sub, subIndex) => (
                       <motion.div
                         key={sub.id}
@@ -254,8 +254,9 @@ export default function XMBMenu() {
                         <Image
                           src={sub.icon}
                           alt={sub.label}
-                          width={60}
-                          height={60}
+                          width={48}
+                          height={48}
+                          style={{ maxWidth: 48, maxHeight: 48 }}
                           className={[
                             "submenu-icon",
                             "transition",

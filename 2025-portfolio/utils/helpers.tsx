@@ -13,10 +13,11 @@ export function navigateTo(url: string): void {
 
 export const getYOffset = (childIndex: number, selectedStep: number) => {
   // The offsets are based on the index of the child element
+  // object (MenuItem) and the selected main category index
   const offsetConfig = {
-    0: [0, 0, 0, 0, 0, 0, 0],
-    1: [-240, -95, -95, -95, -95, -95, -95],
-    2: [-335, -335, -190, -190, -190, -190, -190],
+    0: [0, 0, 0, 0, 0, 0, 0], // No offset for first category (index 0), home
+    1: [-160, -60, -60, -60, -60, -60, -60],
+    2: [-220, -220, -120, -120, -190, -190, -190],
     3: [-430, -430, -430, -285, -285, -285, -285],
     4: [-525, -525, -525, -525, -380, -380, -380],
     5: [-620, -620, -620, -620, -620, -475, -475],

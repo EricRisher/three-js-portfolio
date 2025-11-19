@@ -8,11 +8,6 @@
 }
 
 /* Main category row styling */
-.categories {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
 
 .category {
   display: flex;
