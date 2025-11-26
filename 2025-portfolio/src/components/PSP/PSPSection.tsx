@@ -10,8 +10,14 @@ import PSPScreen from "./PSPScreen";
 
 export function PSPSection() {
   const [scrollY, setScrollY] = useState(0);
+  const [sectionHeight, setSectionHeight] = useState(1); // avoid division by 0
   const sectionRef = useRef<HTMLElement | null>(null);
-  const sectionHeight = "" + (sectionRef.current?.offsetHeight || 0) + "px";
+
+  useEffect(() => {
+    if (sectionRef.current) {
+      setSectionHeight(sectionRef.current.offsetHeight);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -19,19 +25,16 @@ export function PSPSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-
-  // Calculate scroll progress and UI state here
-  const t = Math.min(scrollY / parseInt(sectionHeight), 1);
-  const showUI = t >= 1; 
+  // Correct scroll progress
+  const t = Math.min(scrollY / sectionHeight, 1);
+  const showUI = t >= 0.999;
 
   function AnimatedPSP() {
     const modelRef = useRef<THREE.Group>(null);
 
     useFrame(() => {
-      if (!modelRef.current || !sectionHeight) return;
+      if (!modelRef.current) return;
 
-      // Start/top-left to end/bottom-right
       const startX = -3.8,
         endX = 0;
       const startY = 4,
@@ -39,17 +42,11 @@ export function PSPSection() {
       const startScale = 0.6,
         endScale = 1.1;
 
-      const startPitch = 0.05; // flat at top
-      const endPitch = 0.12; // tilt slightly forward
-      modelRef.current.rotation.x = THREE.MathUtils.lerp(
-        startPitch,
-        endPitch,
-        t
-      );
-
+      modelRef.current.rotation.x = THREE.MathUtils.lerp(0.05, 0.12, t);
       modelRef.current.position.x = THREE.MathUtils.lerp(startX, endX, t);
       modelRef.current.position.y = THREE.MathUtils.lerp(startY, endY, t);
       modelRef.current.rotation.y = t * Math.PI * 2;
+
       const scale = THREE.MathUtils.lerp(startScale, endScale, t);
       modelRef.current.scale.set(scale, scale, scale);
     });
@@ -84,7 +81,7 @@ export function PSPSection() {
         </Suspense>
       </Canvas>
 
-      {/* Overlay the PSP screen/XMB menu only when scroll ends */}
+      {/* Pass showUI properly */}
       <PSPScreen showUI={showUI} />
 
       <div className="w-9/16 h-full relative z-10 pointer-events-none"></div>
