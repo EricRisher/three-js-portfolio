@@ -10,24 +10,61 @@ import PSPScreen from "./PSPScreen";
 
 export function PSPSection() {
   const [scrollY, setScrollY] = useState(0);
-  const [sectionHeight, setSectionHeight] = useState(1); // avoid division by 0
-  const sectionRef = useRef<HTMLElement | null>(null);
+  const [sectionHeight, setSectionHeight] = useState(1);
+  const [pspFocused, setPspFocused] = useState(false);
 
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const pspRef = useRef<HTMLDivElement | null>(null);
+
+  // measure height
   useEffect(() => {
     if (sectionRef.current) {
       setSectionHeight(sectionRef.current.offsetHeight);
     }
   }, []);
 
+  // scroll tracking + auto exit
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+
+      // exit focus if PSP leaves viewport
+      if (pspFocused && sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          setPspFocused(false);
+        }
+      }
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pspFocused]);
 
-  // Correct scroll progress
+  // scroll progress
   const t = Math.min(scrollY / sectionHeight, 1);
   const showUI = t >= 0.999;
+
+  // global key handling for PSP focus
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+
+      // ESC → exit PSP
+      if (pspFocused && e.key === "Escape") {
+        setPspFocused(false);
+        return;
+      }
+
+      // intercept keys only when PSP focused
+      if (pspFocused) {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent("psp-key", { detail: e.key }));
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [pspFocused, showUI]);
 
   function AnimatedPSP() {
     const modelRef = useRef<THREE.Group>(null);
@@ -81,8 +118,12 @@ export function PSPSection() {
         </Suspense>
       </Canvas>
 
-      {/* Pass showUI properly */}
-      <PSPScreen showUI={showUI} />
+      <PSPScreen
+        showUI={showUI}
+        focused={pspFocused}
+        setFocused={setPspFocused}
+        pspRef={pspRef}
+      />
 
       <div className="w-9/16 h-full relative z-10 pointer-events-none"></div>
 
@@ -93,8 +134,8 @@ export function PSPSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          &quot;I strive for two things in design: simplicity and clarity. Great
-          design is born of those two things.&quot;— Lindon Leader
+          "I strive for two things in design: simplicity and clarity. Great
+          design is born of those two things." — Lindon Leader
         </motion.p>
       </motion.div>
     </section>
