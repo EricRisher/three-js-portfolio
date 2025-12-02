@@ -13,7 +13,7 @@ export default function PSPScreen({
   showUI: boolean;
   focused: boolean;
   setFocused: (v: boolean) => void;
-  pspRef: any;
+  pspRef: React.RefObject<HTMLDivElement>;
 }) {
   // click-to-focus only AFTER powered on
   const handleClick = () => {
@@ -24,8 +24,8 @@ export default function PSPScreen({
   useEffect(() => {
     if (!focused) return;
 
-    const handler = (e: any) => {
-      const key = e.detail;
+    const handler = (e: Event) => {
+      const key = (e as CustomEvent).detail;
       console.log("PSP NAV:", key);
     };
 
@@ -53,7 +53,7 @@ export default function PSPScreen({
           <>
             <Startup />
             <VideoBackground />
-            <XMBMenu focused={focused} />
+            <XMBMenu />
           </>
         )}
       </div>
