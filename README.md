@@ -1,5 +1,7 @@
 # Creative Developer Portfolio
 
+<img width="1440" height="1024" alt="hero" src="https://github.com/user-attachments/assets/d67f479c-583e-4a69-95ef-e7f1d5a7c03b" />
+
 ---
 
 ## Description
@@ -47,10 +49,5 @@ npm install
 npm run dev
 ```
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## Screenshot
-<img width="1440" height="1024" alt="hero" src="https://github.com/user-attachments/assets/d67f479c-583e-4a69-95ef-e7f1d5a7c03b" />
 
 ---
